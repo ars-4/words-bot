@@ -108,6 +108,7 @@
 <body>
     <div class="main">
         <button onclick="toggle()">💡</button>
+        <button onclick="clear_div()" style="float:right;">Clear</button>
         <div id="replies">
             <span>--------- Start Typing..  ---------</span>
         </div>
@@ -131,8 +132,12 @@
             }
         }
 
-
         const replies_container = document.getElementById("replies");
+        function clear_div() {
+            replies_container.innerHTML = "";
+        }
+
+
         async function get_reply(e) {
             e.preventDefault();
             let user_q = document.createElement('p');

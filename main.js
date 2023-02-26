@@ -1,7 +1,19 @@
 const read_excel_file = require('read-excel-file/node');
+const express = require('express');
 
-
+const app = express();
 let replies = [];
+const port = 8000;
+
+
+app.get("/", (req, res) => {
+    res.send("Welcome");
+    res.end();
+})
+
+app.listen(port, () => {
+    console.log(`Listening at port ${port}`)
+})
 
 async function read_excel(_file) {
     const rows = await read_excel_file(_file);

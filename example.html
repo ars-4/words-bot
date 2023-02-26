@@ -14,6 +14,15 @@
         align-items: center;
     }
 
+    .dark {
+        background-color: #1a1a1a;
+        color: #fff;
+    }
+    .light {
+        background-color: #fff;
+        color: #1a1a1a;
+    }
+
     .main {
         width: 300px;
         display: block;
@@ -24,6 +33,13 @@
         overflow-y: scroll;
         height: 300px;
         overflow-x: hidden;
+    }
+    .main #replies span {
+        color: #c3c3c3;
+        font-size: 12px;
+        text-align: center !important;
+        display: block;
+        width: 100%;
     }
 
     .user {
@@ -74,6 +90,7 @@
         border: 1px solid #c3c3c3;
         padding: 6px;
         width: 70%;
+        background-color: transparent;
     }
     .main input:focus {
         outline: none;
@@ -89,19 +106,32 @@
 </style>
 
 <body>
-    
     <div class="main">
+        <button onclick="toggle()">💡</button>
         <div id="replies">
-            <p class="user">questioned</p>
-            <p class="server">replied</p>
+            <span>--------- Start Typing..  ---------</span>
         </div>
         <form method="post" onsubmit="get_reply(event)">
-            <input type="text" name="sentence">
+            <input type="text" name="sentence" placeholder="Type here...">
             <button>Send</button>
         </form>
     </div>
 
     <script>
+
+        function toggle() {
+            let body = document.getElementsByTagName('body');
+            if(body[0].classList[0] == 'dark') {
+                body[0].classList.remove('dark');
+                body[0].classList.add('light');
+            }
+            else {
+                body[0].classList.remove('light');
+                body[0].classList.add('dark');
+            }
+        }
+
+
         const replies_container = document.getElementById("replies");
         async function get_reply(e) {
             e.preventDefault();
@@ -121,10 +151,10 @@
                     'sentence': e.target[0].value
                 })
             }).then(res => { return res.json() }).then(data => {
-                console.log(data)
                 server_a.innerHTML = data['data']
             }).catch(err => {
                 console.log(err)
+                server_a.innerHTML = err;
             })
             e.target[0].value = "";
             replies_container.appendChild(server_a);

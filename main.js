@@ -46,7 +46,7 @@ async function read_excel(_file) {
         obj.commands = [];
         obj.reply = "";
         rows[i][0].split(', ').forEach((element) => {
-           obj['commands'].push(element);
+           obj['commands'].push(element.toLowerCase());
            obj['reply'] = rows[i][1];
         });
         replies.push(obj);
@@ -58,7 +58,7 @@ async function read_excel(_file) {
 async function get_reply(words) {
     const replies = await read_excel('commands.xlsx');
     let reply = "Sorry I didn't understand that.";
-
+    words = words.toLowerCase();
     for (let i = 0; i < replies.length; i++) {
         if( words.includes(replies[i].commands[0]) ) {
             for(let j = 0; j < replies[i].commands.length; j++) {

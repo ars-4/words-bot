@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .main {
+        width: 300px;
+        display: block;
+        border: 1px solid #c3c3c3;
+    }
+
+    .main #replies {
+        overflow-y: scroll;
+        height: 300px;
+        overflow-x: hidden;
+    }
+
+    .user {
+        background-color: green;
+        padding: 15px;
+        border-radius: 4px;
+        position: relative;
+        margin: 15%;
+        margin-right: -1%;
+        color: #fff;
+    }
+    .user::after {
+        content: '';
+        background-color: green;
+        padding: 15px;
+        display: block;
+        width: 10px;
+        position: absolute;
+        bottom: -9%;
+        right: 2%;
+        transform: rotate(60deg) !important;
+    }
+
+    .server {
+        background-color: blue;
+        padding: 15px;
+        margin: 15%;
+        margin-left: -1%;
+        color: #fff;
+        border-radius: 4px;
+        position: relative;
+    }
+    .server::after {
+        content: '';
+        background-color: blue;
+        padding: 15px;
+        display: block;
+        width: 10px;
+        position: absolute;
+        bottom: -9%;
+        left: 2%;
+        transform: rotate(-60deg) !important;
+        z-index: -1;
+    }
+
+
+    .main input {
+        border: 1px solid #c3c3c3;
+        padding: 6px;
+        width: 70%;
+    }
+    .main input:focus {
+        outline: none;
+    }
+    .main button {
+        padding: 7px;
+        color: #fff;
+        width: 24%;
+        background-color: #f44336;
+        border: none;
+    }
+
+</style>
+
+<body>
+    
+    <div class="main">
+        <div id="replies">
+            <p class="user">questioned</p>
+            <p class="server">replied</p>
+        </div>
+        <form method="post" onsubmit="get_reply(event)">
+            <input type="text" name="sentence">
+            <button>Send</button>
+        </form>
+    </div>
+
+    <script>
+        const replies_container = document.getElementById("replies");
+        async function get_reply(e) {
+            e.preventDefault();
+            let user_q = document.createElement('p');
+            user_q.classList.add('user')
+            let server_a = document.createElement('p');
+            server_a.classList.add('server');
+            user_q.innerHTML = e.target[0].value;
+            replies_container.appendChild(user_q);
+
+            let reply = await fetch(`http://127.0.0.1:8000/replyme`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    'sentence': e.target[0].value
+                })
+            }).then(res => { return res.json() }).then(data => {
+                console.log(data)
+                server_a.innerHTML = data['data']
+            }).catch(err => {
+                console.log(err)
+            })
+            e.target[0].value = "";
+            replies_container.appendChild(server_a);
+            server_a.scrollIntoView()
+        }
+    </script>
+</body>
+
+</html>

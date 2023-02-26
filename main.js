@@ -1,15 +1,38 @@
 const read_excel_file = require('read-excel-file/node');
 const express = require('express');
+const bodyParser = require('body-parser');
+const cors = require('cors');
 
 const app = express();
 let replies = [];
 const port = 8000;
 
+app.use(bodyParser.urlencoded({
+    extended:true
+}));
+app.use(express.json());
+app.use(cors());
+
 
 app.get("/", (req, res) => {
-    res.send("Welcome");
+    res.send(`
+    <h1>Welcome</h1>
+    <form method="post" action="/replyme">
+    <input type="text" name="sentence">
+    <button>Send</button>
+    </form>
+    `);
     res.end();
 })
+app.post("/replyme", async (req, res) => {
+    let sentence = req.body['sentence'];
+    let reply = await get_reply(sentence);
+    res.send({
+        "error":"false",
+        "data":reply
+    });
+    res.end();
+});
 
 app.listen(port, () => {
     console.log(`Listening at port ${port}`)
